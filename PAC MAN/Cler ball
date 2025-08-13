@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Bola que Pula</title>
+  <style>
+    canvas {
+      background: #e0f7fa;
+      display: block;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+<canvas id="gameCanvas" width="500" height="400"></canvas>
+
+<script>
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+
+// Bola
+let bola = {
+  x: 250,
+  y: 200,
+  raio: 20,
+  cor: 'blue',
+  velocidadeY: 0,
+  gravidade: 0.5,
+  puloForca: -10
+};
+
+// Tecla
+let pulando = false;
+document.addEventListener('keydown', function(e) {
+  if (e.code === 'Space' && !pulando) {
+    bola.velocidadeY = bola.puloForca;
+    pulando = true;
+  }
+});
+
+function atualizar() {
+  // Gravidade
+  bola.velocidadeY += bola.gravidade;
+  bola.y += bola.velocidadeY;
+
+  // Quicar no chão
+  if (bola.y + bola.raio > canvas.height) {
+    bola.y = canvas.height - bola.raio;
+    bola.velocidadeY = 0;
+    pulando = false;
+  }
+}
+
+function desenhar() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // Desenhar bola
+  ctx.beginPath();
+  ctx.arc(bola.x, bola.y, bola.raio, 0, Math.PI * 2);
+  ctx.fillStyle = bola.cor;
+  ctx.fill();
+  ctx.closePath();
+}
+
+function loop() {
+  atualizar();
+  desenhar();
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>
+
